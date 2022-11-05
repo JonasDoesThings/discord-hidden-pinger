@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.bg-gradient-pink-to-fuchsia {
+    @apply bg-gradient-to-r from-pink-500 to-fuchsia-500;
+}
+
+.bg-gradient-pink-via-fuchsia-to-pink {
+    @apply bg-gradient-to-r from-pink-500 via-fuchsia-500 to-pink-500;
+}

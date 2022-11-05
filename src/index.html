@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Discord Hidden Pinger</title>
+  </head>
+  <body class="min-w-full h-[93vh] md:h-screen flex flex-col bg-gray-100 p-4">
+    <main class="w-auto mx-auto mt-4 md:my-auto md:flex md:flex-col md:justify-center flex-grow">
+      <h1 class="text-3xl md:text-4xl font-bold">Discord Hidden Pinger</h1>
+
+      <div class="mt-4 mb-1 pr-2">
+        <p class="inline-block"><span class="font-semibold">Step 1:</span> Enter the</p>
+        <label>
+          <span>Target User ID</span>
+          <input id="userid-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="number" placeholder="123456789012345678">
+        </label>
+      </div>
+
+      <div class="my-2 pr-2">
+        <p class="inline-block"><span class="font-semibold">Step 2:</span> Enter the</p>
+        <label>
+          <span>Message that will be visible</span>
+          <input id="visible-message-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="text" placeholder="Hello :)">
+        </label>
+      </div>
+
+      <hr class="mt-4 mb-2">
+
+      <div class="pr-2">
+        <label for="result-textarea"><span><span class="font-semibold">Step 3:</span> Paste the result into Discord: </span></label>
+        <textarea readonly id="result-textarea" class="block mt-1 ml-1 md:ml-3 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" rows="12"></textarea>
+      </div>
+
+      <div class="pr-2 text-center">
+        <button class="mt-1 ml-1 md:ml-3 w-full inline-block rounded border border-transparent bg-green-700 px-2.5 py-1.5 font-semibold text-center text-white shadow-sm transition-colors hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" data-clipboard-target="#result-textarea">Copy Text</button>
+      </div>
+
+    </main>
+    <footer class="text-center pt-6 pb-4 md:my-0">
+      <span class="font-mono font-bold text-md">by <a class="bg-gradient-pink-to-fuchsia text-transparent bg-clip-text" href="https://jonasdoesthings.com/" target="_blank">JonasDoesThings.com</a></span>
+    </footer>
+  </body>
+
+  <script type="text/javascript">
+    const userIDInput = document.getElementById("userid-input");
+    const visibleMessageInput = document.getElementById("visible-message-input");
+    const targetTextarea = document.getElementById("result-textarea");
+
+    const onInputChange = () => {
+      targetTextarea.value = `${visibleMessageInput.value}${decodeURIComponent("||\u200B||").repeat(200)}<@${userIDInput.value}>`
+    }
+  </script>
+  <script type="module">
+    import ClipboardJS from "clipboard";
+    new ClipboardJS("button");
+  </script>
+
+  <link rel="stylesheet" href="css/index.pcss">
+</html>
