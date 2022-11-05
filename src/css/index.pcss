@@ -18,6 +18,13 @@ input[type=number] {
     @apply bg-gradient-to-r from-pink-500 to-fuchsia-500;
 }
 
-.bg-gradient-pink-via-fuchsia-to-pink {
-    @apply bg-gradient-to-r from-pink-500 via-fuchsia-500 to-pink-500;
+.hover\:bg-gradient-pink-to-purple:hover {
+    @apply bg-gradient-to-r from-pink-700 to-purple-800;
+}
+
+/* Fix for Edge */
+.bg-clip-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
 }
