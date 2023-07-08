@@ -22,9 +22,9 @@
         <p class="inline-block"><span class="font-semibold">Step 1:</span> Enter the</p>
         <label>
           <span>Target User ID <br class="my-0 sm:hidden"></span>
-          <input id="userid-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="text" placeholder="123456789012345678">
+          <textarea id="userid-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="text" rows="3" placeholder="123456789012345678"></textarea>
         </label>
-        <p class="text-xs ml-2 md:ml-3.5 mt-0.5">(or <span class="font-mono">user#discriminator</span>)</p>
+        <p class="text-xs ml-2 md:ml-3.5 mt-0.5">(one per line if you want to ping multiple users, or <span class="font-mono">user#discriminator</span>)</p>
       </div>
 
       <div class="my-2 pr-2">
@@ -59,7 +59,8 @@
     const targetTextarea = document.getElementById("result-textarea");
 
     const onInputChange = () => {
-      targetTextarea.value = `${visibleMessageInput.value}${decodeURIComponent("||\u200B||").repeat(200)}<@${userIDInput.value}>`
+      const pings = userIDInput.value.split("\n").reduce((acc, userID) => userID.trim().length > 0 ? acc + `<@${userID.trim()}> ` : acc, "").trimEnd();
+      targetTextarea.value = `${visibleMessageInput.value}${decodeURIComponent("||\u200B||").repeat(200)}${pings}`
     }
   </script>
   <script type="module">
