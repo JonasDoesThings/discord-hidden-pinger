@@ -2,6 +2,10 @@
   "name": "discord-hidden-pinger",
   "version": "1.0.0",
   "author": "jonasdoesthings.com",
+  "homepage": "https://discord-hidden-pinger.jonasdoesthings.com/",
+  "bugs": {
+    "url": "https://github.com/JonasDoesThings/discord-hidden-pinger/issues"
+  },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "start": "parcel ./src/index.html",
