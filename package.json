@@ -9,7 +9,7 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "start": "parcel ./src/index.html",
-    "build": "parcel build ./src/index.html",
+    "build": "parcel build ./src/index.html ./src/discord-invite-checker.html",
     "clean": "rm -rf .parcel-cache dist/"
   },
   "devDependencies": {
