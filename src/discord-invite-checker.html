@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Discord Invite-Link Checker Tool</title>
+    <link rel="shortcut icon" href="./assets/favicon.png">
+    <meta name="description" content="Fetches lots of information like server info, inviter, and more about discord invite-links.">
+
+    <link rel="canonical" href="https://discord-hidden-pinger.jonasdoesthings.com/discord-invite-checker" />
+
+    <meta property="og:url" content="https://discord-hidden-pinger.jonasdoesthings.com/discord-invite-checker">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Discord Invite-Link Checker Tool">
+    <meta property="og:description" content="Fetches lots of information like server info, inviter, and more about discord invite-links.">
+
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Discord Invite-Link Checker Tool" />
+    <meta property="twitter:description" content="Fetches lots of information like server info, inviter, and more about discord invite-links." />
+    <meta property="twitter:creator" content="@JonasDoesThings" />
+
+  </head>
+  <body class="min-w-full h-[93vh] md:h-screen flex flex-col bg-gray-100 p-4">
+    <main class="w-auto mx-auto mt-4 md:my-auto md:flex md:flex-col md:justify-center flex-grow">
+      <h1 class="text-3xl md:text-4xl font-bold">Discord Invite-Link Checker</h1>
+
+      <div class="mt-4 mb-1 pr-2">
+        <p class="inline-block"><span class="font-semibold">Step 1:</span> Enter the</p>
+        <label>
+          <span>Discord Invite Link <br class="my-0 sm:hidden"></span>
+          <input id="invite-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" type="text" placeholder="discord.gg/coolserver"></input>
+        </label>
+      </div>
+
+      <hr class="mt-4 mb-2">
+
+      <div class="pr-2">
+        <label for="fetch-details-button"><span><span class="font-semibold">Step 2:</span> Fetch Information: </span></label>
+        <button class="mt-1 ml-1 md:ml-3 w-full inline-block rounded border border-transparent bg-green-700 px-2.5 py-1.5 font-semibold text-center text-white shadow-sm transition-colors hover:bg-green-800 disabled:bg-gray-400 disabled:animate-pulse focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" id="fetch-details-button">Fetch Details from Discord</button>
+      </div>
+
+      <div class="flex flex-col gap-4 mt-8 border-b-2 border-green-700/60 p-2" id="results-container"></div>
+
+      <p id="error-container" class="text-red-600 font-bold px-4 mt-4"></p>
+
+      <p class="mt-6 text-sm px-4 md:px-12 text-gray-800">
+        Looking for small browser games to play (with your friends)?<br>
+        Check out <a class="underline text-pink-600" href="https://iogames.cool/">www.iogames.cool</a>.
+      </p>
+      <hr class="mt-6 mb-3">
+
+      <div class="mb-4">
+        <span class="font-bold text-lg">Other Tools:</span>
+        <ul class="list-disc list-inside">
+          <li><a class="text-red-400 underline" href="/">Discord Hidden Pinger</a></li>
+        </ul>
+      </div>
+
+      <p class="max-w-lg px-2 text-sm">
+        The Discord Invite-Link Checker tool allows you to fetch various kinds of data from a Discord Invite Link. <br />
+        For example you can check the expiration of a discord invite link, count how many members are on a discord guild, who created the discord invite link, or where a discord invite leads you to. <br />
+      </p>
+    </main>
+    <footer class="text-center pt-6 pb-4 md:my-0">
+      <p class="font-mono font-bold text-md">by <a class="bg-gradient-pink-to-fuchsia text-transparent bg-clip-text transition-all hover:bg-gradient-pink-to-purple" href="https://jonasdoesthings.com/" target="_blank">JonasDoesThings.com</a></p>
+      <p class="font-mono font-medium text-sm mt-0.5"><a href="https://github.com/JonasDoesThings/discord-hidden-pinger" target="_blank" rel="nofollow noreferrer noopener">Source Code Available on <span class="underline transition-colors hover:text-gray-500">GitHub</span></a></p>
+      <p class="font-mini text-xs text-gray-500">This site is in no way affiliated with Discord</p>
+    </footer>
+  </body>
+
+  <script type="text/javascript">
+    const inviteInput = document.getElementById("invite-input");
+    const fetchInviteButton = document.getElementById("fetch-details-button");
+    const errorContainer = document.getElementById("error-container");
+    const resultsContainer = document.getElementById("results-container");
+
+    const setInviteButtonLoading = (isLoading) => {
+      fetchInviteButton.disabled = isLoading;
+    }
+
+    fetchInviteButton.addEventListener("click", async () => {
+      if(inviteInput.value.trim().length < 1) return;
+      let inviteId = inviteInput.value.trim().split("/").at(-1);
+
+      setInviteButtonLoading(true);
+      const apiResponse = await fetch(`https://discord.com/api/v9/invites/${inviteId}?with_counts=1&with_expiration=1`);
+      if(!apiResponse.ok) {
+        if(apiResponse.status === 404) {
+          errorContainer.innerText = "Could not resolve the invite. Server not found."
+        } else {
+          errorContainer.innerText = "An error occurred. Please try again."
+        }
+        setInviteButtonLoading(false);
+        return;
+      }
+
+      const data = await apiResponse.json();
+
+      const createImageContainer = (imageSrc, imageCaption, imageAlt, isLandscapeMode = false) => {
+        const imageFigureEl = document.createElement("figure")
+        const imageEl = document.createElement("img")
+        imageEl.src = imageSrc;
+        imageEl.alt = imageAlt;
+        imageEl.className = isLandscapeMode ? "h-32 w-auto" : "w-32 h-auto"
+        const imageCaptionEl = document.createElement("figcaption");
+        imageCaptionEl.innerText = imageCaption;
+        imageCaptionEl.className = "text-sm"
+        imageFigureEl.append(imageCaptionEl, imageEl);
+
+        return imageFigureEl;
+      }
+
+      resultsContainer.replaceChildren(...[
+        (() => {
+          const e = document.createElement("div")
+
+          const titleEl = document.createElement("p");
+          titleEl.innerText = data.guild.name;
+          titleEl.className = "font-bold text-2xl"
+
+          const dataContainerEl = document.createElement("div");
+          dataContainerEl.className = "flex flex-col pl-3";
+
+          if(data.guild.nsfw) {
+            const nsfwLevelMap = {
+              0: "Default",
+              1: "Explicit",
+              2: "Safe",
+              3: "Age Restricted"
+            }
+
+            const nsfwIndicatorEl = document.createElement("p");
+            nsfwIndicatorEl.innerText = `${data.guild.nsfw_level !== 2 ? "NSFW" : "SFW"} (${nsfwLevelMap[data.guild.nsfw_level]})`;
+            nsfwIndicatorEl.className = `${data.guild.nsfw_level !== 2 ? "bg-red-500" : "bg-green-500"} text-white text-xs font-bold inline-block px-1.5 py-0.5 rounded mr-auto`
+            dataContainerEl.append(nsfwIndicatorEl);
+          }
+
+          const membersCountEl = document.createElement("p");
+          membersCountEl.innerText = `${data.approximate_presence_count} of ${data.approximate_member_count} members online`;
+          membersCountEl.className = "text-sm";
+          dataContainerEl.append(membersCountEl);
+
+          const boostCountEl = document.createElement("p");
+          boostCountEl.innerText = `${data.guild.premium_subscription_count} boosts`;
+          boostCountEl.className = "text-sm";
+          dataContainerEl.append(boostCountEl);
+
+          const verificationLevelMap = {
+            0: "unrestricted",
+            1: "must have verified email",
+            2: "must be registered for longer than 5 minutes",
+            3: "must be member for longer than 10 minutes",
+            4: "must have verified phone number"
+          }
+
+          const verificationLevelEl = document.createElement("p");
+          verificationLevelEl.innerText = `verification level ${data.guild.verification_level} (${verificationLevelMap[data.guild.verification_level]})`;
+          verificationLevelEl.className = "text-sm";
+          dataContainerEl.append(verificationLevelEl);
+
+          const expiresAtEl = document.createElement("p");
+          if(data.expires_at) {
+            const formatDuration = (expiryDate) => {
+              let delta = Math.abs(expiryDate.getTime() - Date.now()) / 1000;
+              let s = "";
+
+              const days = Math.floor(delta / 86400);
+              delta -= days * 86400;
+              if(days >= 1) s += `${days}d `;
+
+              const hours = Math.floor(delta / 3600) % 24;
+              delta -= hours * 3600;
+              s += `${hours}h `;
+
+              const minutes = Math.floor(delta / 60) % 60;
+              delta -= minutes * 60;
+              s += `${minutes}min `;
+
+              return s.trim();
+            }
+
+            const expiryDate = new Date(data.expires_at);
+            expiresAtEl.innerText = `Invite expires on ${expiryDate.toLocaleString()} (in ${formatDuration(expiryDate)})`
+          } else {
+            expiresAtEl.innerText = "Invite does not expire"
+          }
+          expiresAtEl.className = "text-sm";
+          dataContainerEl.append(expiresAtEl);
+
+          if(data.guild.description && data.guild.description.trim().length > 0) {
+            const descriptionEl = document.createElement("p");
+            descriptionEl.innerText = data.guild.description;
+            descriptionEl.className = "mt-3 font-mono text-sm border-l border-black pl-2"
+            dataContainerEl.append(descriptionEl);
+          }
+
+          e.append(titleEl, dataContainerEl)
+          return e;
+        })(),
+        (() => {
+          const e = document.createElement("div");
+
+          const titleEl = document.createElement("p");
+          titleEl.innerText = "Server Images"
+          titleEl.className = "font-bold text-lg"
+
+          const imagesContainerEl = document.createElement("div");
+          imagesContainerEl.className = "flex flex-row flex-wrap gap-2 pl-3"
+
+          if(data.guild.icon) {
+            imagesContainerEl.append(createImageContainer(
+                    `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}?size=256`,
+                    "Server Icon: ",
+                    `Icon of Discord Server ${data.guild.name}`,
+                    false
+            ));
+          } else {
+            const noIconEl = document.createElement("p");
+            noIconEl.innerText = "server has no icon";
+            imagesContainerEl.append(noIconEl);
+          }
+
+          if(data.guild.banner) {
+            imagesContainerEl.append(createImageContainer(
+                    `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}?size=1024`,
+                    "Server Banner: ",
+                    `Banner image of Discord Server ${data.guild.name}`,
+                    true
+            ));
+          }
+
+          if(data.guild.splash) {
+            imagesContainerEl.append(createImageContainer(
+                    `https://cdn.discordapp.com/splashes/${data.guild.id}/${data.guild.splash}?size=1024`,
+                    "Invite Splash: ",
+                    `Splash image of Discord Server ${data.guild.name}`,
+                    true
+            ));
+          }
+
+          e.append(titleEl, imagesContainerEl)
+          return e;
+        })(),
+        (() => {
+          if(!data.inviter) return "";
+          const e = document.createElement("div");
+
+          const titleEl = document.createElement("p");
+          titleEl.innerText = "Invited By"
+          titleEl.className = "font-bold text-lg"
+
+          const flexWrapperEl = document.createElement("div");
+          flexWrapperEl.className = "flex flex-row gap-2 pl-3";
+
+          if(data.inviter.avatar) {
+            const avatarEl = document.createElement("img");
+            avatarEl.src = `https://cdn.discordapp.com/avatars/${data.inviter.id}/${data.inviter.avatar}?size=256`,
+            avatarEl.className = "w-32 h-auto"
+            flexWrapperEl.append(avatarEl)
+          }
+
+          const dataContainerEl = document.createElement("div");
+          dataContainerEl.className = "text-sm"
+
+          const displayNameEl = document.createElement("p");
+          displayNameEl.innerText = "Display Name: " + data.inviter.global_name;
+
+          const userNameEl = document.createElement("p");
+          userNameEl.innerText = `Username: @${data.inviter.username}`;
+
+          const userIdEl = document.createElement("p");
+          userIdEl.innerText = `User ID: ${data.inviter.id}`;
+
+          dataContainerEl.append(displayNameEl, userNameEl, userIdEl);
+
+          flexWrapperEl.append(dataContainerEl);
+          e.append(titleEl, flexWrapperEl);
+          return e;
+        })(),
+        (() => {
+          if(!data.channel) return "";
+          const e = document.createElement("div");
+
+          const titleEl = document.createElement("p");
+          titleEl.innerText = "Invited-to Channel"
+          titleEl.className = "font-bold text-lg"
+
+          const channelNameEl = document.createElement("p");
+          channelNameEl.innerText = `Channel Name: ${data.channel.name}`;
+          channelNameEl.className = "pl-3 text-sm";
+
+          const channelIdEl = document.createElement("p");
+          channelIdEl.innerText = `Channel ID: ${data.channel.id}`;
+          channelIdEl.className = "pl-3 text-sm";
+
+          const channelTypeMap = {
+            0: "Text Channel",
+            1: "Text Channel (Direct Message)",
+            2: "Voice Channel",
+            3: "Group DM",
+            4: "Guild Category",
+            5: "Announcement Channel",
+            10: "Announcement Thread",
+            11: "Thread",
+            12: "Private Thread",
+            13: "Stage Voice Channel",
+            14: "Directory",
+            15: "Forum",
+            16: "Forum"
+          }
+
+          const channelTypeEl = document.createElement("p");
+          channelTypeEl.innerHTML = `Channel Type: <span class="font-mono">${channelTypeMap[data.channel.type]}</span>`;
+          channelTypeEl.className = "pl-3 text-sm text-gray-800";
+
+          e.append(titleEl, channelNameEl, channelIdEl, channelTypeEl);
+          return e;
+        })(),
+        (() => {
+          if(data.guild.features?.length === 0) return "";
+          const e = document.createElement("div");
+
+          const titleEl = document.createElement("p");
+          titleEl.innerText = "Active Features"
+          titleEl.className = "font-bold text-lg"
+
+          const listEl = document.createElement("ul");
+          listEl.className = "text-xs flex flex-row flex-wrap gap-1 pl-3"
+          for(const feature of data.guild.features.sort()) {
+            const listItemEl = document.createElement("li");
+            listItemEl.innerText = feature;
+            listItemEl.className = "bg-green-700 text-white rounded px-2 py-1"
+
+            listEl.append(listItemEl)
+          }
+
+          e.append(titleEl, listEl)
+          return e;
+        })(),
+        (() => {
+          const footerEl = document.createElement("p")
+          footerEl.innerText = `data for https://discord.gg/${data.code}`
+          footerEl.className = "font-mono text-xs"
+
+          return footerEl;
+        })()
+      ]);
+
+      window.location.hash = inviteId;
+      setInviteButtonLoading(false);
+    });
+
+    if(window.location.hash?.trim().length > 0) {
+      inviteInput.value = window.location.hash.trim().slice(1);
+      fetchInviteButton.click();
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/index.pcss">
+</html>
