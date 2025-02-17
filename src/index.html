@@ -104,7 +104,10 @@
     import ClipboardJS from "clipboard";
     new ClipboardJS("button");
   </script>
-  <script src="https://app.tinydialog.com/widget/v1/client-script.js" type="module"></script>
+  <script type="module">
+    import {bindSurveysWithDataAttributes} from '@tinydialog/sdk-js';
+    bindSurveysWithDataAttributes()
+  </script>
 
   <link rel="stylesheet" href="css/index.pcss">
 </html>
