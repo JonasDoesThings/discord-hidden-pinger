@@ -29,7 +29,7 @@
         <p class="inline-block"><span class="font-semibold">Step 1:</span> Enter the</p>
         <label>
           <span>Target User ID <br class="my-0 sm:hidden"></span>
-          <textarea id="userid-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="text" rows="3" placeholder="123456789012345678"></textarea>
+          <textarea id="userid-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" data-trigger-reprocess type="text" rows="3" placeholder="123456789012345678"></textarea>
         </label>
         <p class="text-xs ml-2 md:ml-3.5 mt-0.5">(one per line if you want to ping multiple users, or <span class="font-mono">user#discriminator</span>)</p>
       </div>
@@ -38,7 +38,7 @@
         <p class="inline-block"><span class="font-semibold">Step 2:</span> Enter the</p>
         <label>
           <span>Message that will be visible</span>
-          <input id="visible-message-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" oninput="onInputChange()" type="text" placeholder="Hello :)">
+          <input id="visible-message-input" class="block mt-1 ml-1 md:ml-3 w-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" data-trigger-reprocess type="text" placeholder="Hello :)">
         </label>
       </div>
 
@@ -99,6 +99,7 @@
       const pings = userIDInput.value.split("\n").reduce((acc, userID) => userID.trim().length > 0 ? acc + `<@${userID.trim()}> ` : acc, "").trimEnd();
       targetTextarea.value = `${visibleMessageInput.value}${decodeURIComponent("||\u200B||").repeat(200)}${pings}`
     }
+    document.querySelectorAll("[data-trigger-reprocess]").forEach(e => e.addEventListener("input", onInputChange))
   </script>
   <script type="module">
     import ClipboardJS from "clipboard";
